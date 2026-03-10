@@ -5,6 +5,7 @@
     import androidx.compose.ui.graphics.vector.ImageVector
     import kotlinx.serialization.Serializable
 
+
     @Serializable
     object HomeDestination
 
@@ -12,10 +13,10 @@
     object AboutDestination
 
     sealed class BottomNavItem (
-        var label: String,
-        var icon: ImageVector,
-        var route: String)
+        val label: String,
+        val icon: ImageVector,
+        val route: Any)
     {
-        data object Home : BottomNavItem("Home", Icons.Default.Home, "home_destination")
-        data object About : BottomNavItem("About", Icons.Default.Info, "about_destination")
+        data object Home : BottomNavItem("Home", Icons.Default.Home, HomeDestination)
+        data object About : BottomNavItem("About", Icons.Default.Info, AboutDestination)
     }
