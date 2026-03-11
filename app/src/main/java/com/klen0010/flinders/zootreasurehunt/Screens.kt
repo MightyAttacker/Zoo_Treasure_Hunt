@@ -1,11 +1,16 @@
 package com.klen0010.flinders.zootreasurehunt
 
+import android.view.inputmethod.DeleteGesture
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -36,31 +41,37 @@ fun AboutScreen() {
 @Composable
 fun ListScreen(
     sightings: List<Sighting>,
-    onEditClick: (Sighting) -> Unit
+    onEditClick: (Sighting) -> Unit,
+    onDelete: (Sighting) -> Unit
 ) {
+    val listState = rememberLazyListState()
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column(
+        LazyColumn(
+            state = listState,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = spacedBy(8.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-
-            sightings.forEach { animal ->
-                AnimalCard(
-                    sighting = animal,
-                    onClick = { onEditClick(animal) }
+            item {
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
+            }
+            items(
+                items = sightings,
+                key = { it.id }
+            ) { animal ->
+                SwipeableSighting(
+                    sighting = animal,
+                    onEditClick = { onEditClick(animal) },
+                    onSwipe = { onDelete(animal) }
+                )
             }
         }
     }
