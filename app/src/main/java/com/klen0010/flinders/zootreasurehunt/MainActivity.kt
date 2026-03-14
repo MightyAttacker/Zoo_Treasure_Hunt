@@ -2,7 +2,6 @@ package com.klen0010.flinders.zootreasurehunt
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
@@ -43,8 +42,6 @@ import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
 import androidx.compose.foundation.layout.size
-import androidx.compose.ui.platform.LocalContext
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
@@ -63,15 +60,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ZooApp() {
-    val context = LocalContext.current  // to pass our repository
     val navController = rememberNavController()
     val viewModel: ZooViewModel = viewModel()
     val sightings by viewModel.sightings.collectAsState()
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { }
-    )
 
     var selectedSighting by remember { mutableStateOf<Sighting?>(null) }
     var showDialog by remember { mutableStateOf(false) }
