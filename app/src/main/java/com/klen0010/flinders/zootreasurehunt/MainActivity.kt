@@ -24,10 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +39,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
 import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import com.klen0010.flinders.zootreasurehunt.data.SightingRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,15 +64,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ZooApp() {
+    val context = LocalContext.current  // to pass our repository
+    val repository = remember { SightingRepository(context) }  // to initialise the repository
+    val scope = rememberCoroutineScope()  // create a scope for running background tasks
     val navController = rememberNavController()
-    val sightings = rememberSaveable {
-        mutableStateListOf(
-                Sighting(name = "Lion"),
-                Sighting(name = "Red Panda"),
-                Sighting(name = "Giraffe"),
-                Sighting(name = "Kangaroo"),
-                Sighting(name = "Penguin")
-        )
+    var sightings by remember { mutableStateOf(emptyList<Sighting>()) }
+
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            sightings = repository.loadSightings()
+        }
+    }
+
+    fun saveData(newList: List<Sighting>) {
+        sightings = newList              // Update UI immediately
+        scope.launch(Dispatchers.IO) {   // Save to file in background
+            repository.saveSightings(newList)
+        }
     }
 
     var selectedSighting by remember { mutableStateOf<Sighting?>(null) }
@@ -109,7 +124,7 @@ fun ZooApp() {
                             showDialog = true
                         },
                         onDelete = { animal ->
-                            sightings.remove(animal)
+                            val newList = sightings.filter { it.id != animal.id }
                         }
                     )
                 }
@@ -123,10 +138,7 @@ fun ZooApp() {
                         sighting = sighting,
                         onDismiss = { showDialog = false },
                         onSave = { updated ->
-                            val index = sightings.indexOfFirst { it.id == updated.id }
-                            if (index != -1) {
-                                sightings[index] = updated
-                            }
+                            val newList = sightings.map { if (it.id == updated.id) updated else it }
                             showDialog = false
                         }
                     )
@@ -150,6 +162,13 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            AsyncImage (
+                model = sighting.imageUrl,
+                contentDescription = sighting.name,
+                modifier = Modifier
+                .size(64.dp)
+                .padding(end = 8.dp)
+            )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = sighting.name,
