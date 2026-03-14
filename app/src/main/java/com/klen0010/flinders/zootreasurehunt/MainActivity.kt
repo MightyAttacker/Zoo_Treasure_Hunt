@@ -2,6 +2,7 @@ package com.klen0010.flinders.zootreasurehunt
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
@@ -49,6 +50,11 @@ import com.klen0010.flinders.zootreasurehunt.data.SightingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.klen0010.flinders.zootreasurehunt.worker.CongratulationWorker
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +76,15 @@ fun ZooApp() {
     val navController = rememberNavController()
     var sightings by remember { mutableStateOf(emptyList<Sighting>()) }
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { }
+    )
+
     LaunchedEffect(Unit) {
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
         withContext(Dispatchers.IO) {
             sightings = repository.loadSightings()
         }
@@ -139,6 +153,13 @@ fun ZooApp() {
                         sighting = sighting,
                         onDismiss = { showDialog = false },
                         onSave = { updated ->
+                            if(updated.isFound && selectedSighting?.isFound == false) {
+                                val workRequest = OneTimeWorkRequestBuilder<CongratulationWorker>()
+                                    .setInputData(workDataOf("ANIMAL_NAME" to updated.name))
+                                    .build()
+
+                                WorkManager.getInstance(context).enqueue(workRequest)
+                            }
                             val newList = sightings.map { if (it.id == updated.id) updated else it }
                             showDialog = false
                             saveData(newList)
