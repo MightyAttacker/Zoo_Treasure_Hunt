@@ -43,18 +43,11 @@ import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import com.klen0010.flinders.zootreasurehunt.data.SightingRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import com.klen0010.flinders.zootreasurehunt.worker.CongratulationWorker
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,31 +64,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ZooApp() {
     val context = LocalContext.current  // to pass our repository
-    val repository = remember { SightingRepository(context) }  // to initialise the repository
-    val scope = rememberCoroutineScope()  // create a scope for running background tasks
     val navController = rememberNavController()
-    var sightings by remember { mutableStateOf(emptyList<Sighting>()) }
+    val viewModel: ZooViewModel = viewModel()
+    val sightings by viewModel.sightings.collectAsState()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { }
     )
-
-    LaunchedEffect(Unit) {
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        }
-        withContext(Dispatchers.IO) {
-            sightings = repository.loadSightings()
-        }
-    }
-
-    fun saveData(newList: List<Sighting>) {
-        sightings = newList              // Update UI immediately
-        scope.launch(Dispatchers.IO) {   // Save to file in background
-            repository.saveSightings(newList)
-        }
-    }
 
     var selectedSighting by remember { mutableStateOf<Sighting?>(null) }
     var showDialog by remember { mutableStateOf(false) }
@@ -138,8 +114,7 @@ fun ZooApp() {
                             showDialog = true
                         },
                         onDelete = { animal ->
-                            val newList = sightings.filter { it.id != animal.id }
-                            saveData(newList)
+                            viewModel.deleteSighting(animal)
                         }
                     )
                 }
@@ -153,16 +128,7 @@ fun ZooApp() {
                         sighting = sighting,
                         onDismiss = { showDialog = false },
                         onSave = { updated ->
-                            if(updated.isFound && selectedSighting?.isFound == false) {
-                                val workRequest = OneTimeWorkRequestBuilder<CongratulationWorker>()
-                                    .setInputData(workDataOf("ANIMAL_NAME" to updated.name))
-                                    .build()
-
-                                WorkManager.getInstance(context).enqueue(workRequest)
-                            }
-                            val newList = sightings.map { if (it.id == updated.id) updated else it }
-                            showDialog = false
-                            saveData(newList)
+                            viewModel.updateSighting(updated)
                         }
                     )
                 }
