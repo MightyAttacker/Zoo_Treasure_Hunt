@@ -125,6 +125,7 @@ fun ZooApp() {
                         },
                         onDelete = { animal ->
                             val newList = sightings.filter { it.id != animal.id }
+                            saveData(newList)
                         }
                     )
                 }
@@ -140,6 +141,7 @@ fun ZooApp() {
                         onSave = { updated ->
                             val newList = sightings.map { if (it.id == updated.id) updated else it }
                             showDialog = false
+                            saveData(newList)
                         }
                     )
                 }
