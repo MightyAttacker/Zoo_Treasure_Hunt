@@ -214,9 +214,8 @@ fun EditSightingDialog(sighting: Sighting, onDismiss: () -> Unit, onSave: (Sight
                 Text(text = stringResource(id = R.string.cancel_btn))
             }
         }
-    ) // End of AlertDialog
-} // End of EditSightingDialog
-
+    )
+}
 
 @Preview(showBackground = true)
 @Composable
