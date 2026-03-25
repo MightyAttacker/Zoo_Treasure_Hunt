@@ -8,6 +8,7 @@ data class Sighting(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val isFound: Boolean = false,
+    val photoPath: String? = null,
     val notes: String = "",
     val imageUrl: String = "https://wilk0077.github.io/comp2012-images/assets-sm/african-lion-ai.jpg"
 )
