@@ -1,6 +1,5 @@
 package com.klen0010.flinders.zootreasurehunt
 
-import android.provider.MediaStore
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,7 @@ fun SettingsScreen(
     isSortByName: Boolean,
     onSortChange: (Boolean) -> Unit
 ) {
-    Column(){
+    Column{
         Text(
             text = "Settings",
             color = Color.Black,
@@ -39,14 +38,14 @@ fun SettingsScreen(
             modifier = Modifier.padding(start = 30.dp, top = 30.dp, bottom = 15.dp),
             fontWeight = FontWeight.Bold
         )
-        Row(){
+        Row{
             RadioButton(
                 selected = isSortByName,
                 onClick = {onSortChange(true)}
             )
             Text("Sort by name")
         }
-        Row(){
+        Row{
             RadioButton(
                 selected = !isSortByName,
                 onClick = {onSortChange(false)}
