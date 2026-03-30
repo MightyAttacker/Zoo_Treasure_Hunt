@@ -1,4 +1,4 @@
-    package com.klen0010.flinders.zootreasurehunt
+package com.klen0010.flinders.zootreasurehunt.navigation
     import androidx.compose.material.icons.Icons
     import androidx.compose.material.icons.filled.Home
     import androidx.compose.material.icons.filled.Info

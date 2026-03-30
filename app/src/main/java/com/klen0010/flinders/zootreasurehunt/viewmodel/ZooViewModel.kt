@@ -3,27 +3,24 @@ package com.klen0010.flinders.zootreasurehunt.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import com.klen0010.flinders.zootreasurehunt.Sighting
-import com.klen0010.flinders.zootreasurehunt.data.SightingRepository
+import com.klen0010.flinders.zootreasurehunt.model.Sighting
 import com.klen0010.flinders.zootreasurehunt.data.SettingsRepository
-import com.klen0010.flinders.zootreasurehunt.worker.CongratulationWorker
+import com.klen0010.flinders.zootreasurehunt.data.SightingRepository
+import com.klen0010.flinders.zootreasurehunt.model.ZooUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class ZooViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = SightingRepository(application)
-    private val settingsRepository = SettingsRepository(application)
-    private val workManager = WorkManager.getInstance(application)
-    private val _sightings = MutableStateFlow<List<Sighting>>(emptyList())
+class ZooViewModel(
+    private val repository: SightingRepository,
+    private val settingsRepository: SettingsRepository,
+    application: Application
+) : AndroidViewModel(application) {
     private val _rawSightings = MutableStateFlow<List<Sighting>>(emptyList())
-    val sightings: StateFlow<List<Sighting>> = _sightings.asStateFlow()
-    val isSortByName = settingsRepository.sortByNameFlow
+    private val _uiState = MutableStateFlow(ZooUiState())
+    val uiState:StateFlow<ZooUiState> = _uiState.asStateFlow()
 
     init{
         viewModelScope.launch {
@@ -32,37 +29,29 @@ class ZooViewModel(application: Application) : AndroidViewModel(application) {
         }
         viewModelScope.launch {
             combine(_rawSightings, settingsRepository.sortByNameFlow) { list, sortByName ->
-                if (sortByName) {
+                val sortedList = if (sortByName) {
                     list.sortedBy { it.name }
                 } else {
                     list.sortedByDescending { it.isFound }
                 }
-            }.collect { sortedList ->
-                _sightings.value = sortedList
+                _uiState.value.copy(sightings = sortedList, isSortByName = sortByName)
+            }.collect { newState ->
+                _uiState.value = newState
             }
         }
     }
 
+    fun selectSightingForEdit(sighting: Sighting?){
+        _uiState.value = _uiState.value.copy(selectedSighting = sighting, isDialogVisible = sighting != null)
+    }
+
+    fun dismissDialog(){
+        _uiState.value = _uiState.value.copy(selectedSighting = null, isDialogVisible = false)
+    }
 
     private fun updateAndSave(newList: List<Sighting>){
         _rawSightings.value = newList
         viewModelScope.launch { repository.saveSightings(newList) }
-    }
-
-    fun updateSighting(updated: Sighting) {
-        val oldSighting = _rawSightings.value.find { it.id == updated.id }
-        if(updated.isFound && oldSighting?.isFound == false) {
-            val workRequest = OneTimeWorkRequestBuilder<CongratulationWorker>()
-                .setInputData(workDataOf("ANIMAL_NAME" to updated.name))
-                .build()
-
-            workManager.enqueue(workRequest)
-
-        }
-
-        val newList = _rawSightings.value.map { if(it.id == updated.id) updated else it }
-
-        updateAndSave(newList)
     }
 
     fun deleteSighting(sighting: Sighting) {
