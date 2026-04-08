@@ -2,13 +2,17 @@ package com.klen0010.flinders.zootreasurehunt.data
 
 import android.content.Context
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.File
+import javax.inject.Inject
 
-class FileSightingRepository(private val context: Context) : SightingRepository {
-    val fileName: String = "sightings.json"
+
+class FileSightingRepository @Inject constructor (
+    @ApplicationContext private val context: Context
+) : SightingRepository {    val fileName: String = "sightings.json"
 
     override suspend fun addSighting(sighting: Sighting) {
         val currentList = loadSightings().toMutableList()

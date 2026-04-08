@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ZooViewModel(
+@HiltViewModel
+class ZooViewModel @Inject constructor(
     private val repository: SightingRepository,
     private val settingsRepository: SettingsRepository,
     application: Application
