@@ -6,4 +6,35 @@
     <string name="checkbox_found">Mark as Found</string>
     <string name="save_btn">Save</string>
     <string name="cancel_btn">Cancel</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_about">About</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Your Progress</string>
+    <string name="stats_label">Animals Spotted</string>
+    <string name="stats_percentage">%1$d%% Complete</string>
+    <string name="stats_msg_none">Time to start your hunt! Good luck! 🗺️</string>
+    <string name="stats_msg_start">Great start! Keep exploring the zoo! 🦁</string>
+    <string name="stats_msg_half">Over halfway there! Keep looking! 🔍</string>
+    <string name="stats_msg_complete">Amazing! You found them all! 🏆</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_sort_label">Sort Order</string>
+    <string name="settings_sort_name">Sort by name</string>
+    <string name="settings_sort_name_desc">Alphabetical order (A-Z)</string>
+    <string name="settings_sort_date">Sort by date</string>
+    <string name="settings_sort_date_desc">Recent sightings first</string>
+
+    <!-- About Screen -->
+    <string name="about_text">Zoo Hunt\nCreated by\nKLEN0010</string>
+
+    <!-- Components -->
+    <string name="delete_label">Delete</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="retake_photo">Retake Photo</string>
 </resources>

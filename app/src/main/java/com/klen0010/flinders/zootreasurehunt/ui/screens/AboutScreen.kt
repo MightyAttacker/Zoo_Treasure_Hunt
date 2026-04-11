@@ -6,10 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.klen0010.flinders.zootreasurehunt.R
 
-// A screen to show who made the app
+// A simple screen to show who made the app
 @Composable
 fun AboutScreen() {
     Box(
@@ -17,7 +19,7 @@ fun AboutScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Zoo Hunt\nCreated by\nKLEN0010",
+            text = stringResource(id = R.string.about_text),
             textAlign = TextAlign.Center,
             fontSize = 24.sp
         )

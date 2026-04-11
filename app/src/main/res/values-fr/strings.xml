@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Chasse au Trésor du Zoo</string>
+    <string name="found_label">TROUVÉ !</string>
+    <string name="edit_animal">Modifier l\'Observation</string>
+    <string name="notes_hint">Notes d\'Observation</string>
+    <string name="checkbox_found">Marquer comme Trouvé</string>
+    <string name="save_btn">Enregistrer</string>
+    <string name="cancel_btn">Annuler</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_settings">Paramètres</string>
+    <string name="nav_about">À propos</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Votre Progression</string>
+    <string name="stats_label">Animaux Repérés</string>
+    <string name="stats_percentage">%1$d%% Terminé</string>
+    <string name="stats_msg_none">C\'est l\'heure de commencer votre chasse ! Bonne chance ! 🗺️</string>
+    <string name="stats_msg_start">Bon début ! Continuez à explorer le zoo ! 🦁</string>
+    <string name="stats_msg_half">Plus de la moitié ! Continuez à chercher ! 🔍</string>
+    <string name="stats_msg_complete">Incroyable ! Vous les avez tous trouvés ! 🏆</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_sort_label">Ordre de Tri</string>
+    <string name="settings_sort_name">Trier par nom</string>
+    <string name="settings_sort_name_desc">Ordre alphabétique (A-Z)</string>
+    <string name="settings_sort_date">Trier par date</string>
+    <string name="settings_sort_date_desc">Observations récentes en premier</string>
+
+    <!-- About Screen -->
+    <string name="about_text">Zoo Hunt\nCréé par\nKLEN0010</string>
+
+    <!-- Components -->
+    <string name="delete_label">Supprimer</string>
+    <string name="take_photo">Prendre une Photo</string>
+    <string name="retake_photo">Reprendre la Photo</string>
+</resources>

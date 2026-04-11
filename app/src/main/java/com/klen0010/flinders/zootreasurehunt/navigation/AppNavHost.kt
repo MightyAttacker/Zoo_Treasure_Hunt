@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,7 +19,17 @@ import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
-// Handles all the screen switching and animations
+// Helper to figure out the order of our tabs
+private fun getRouteOrder(destination: NavDestination?): Int {
+    return when {
+        destination?.hasRoute<HomeDestination>() == true -> 0
+        destination?.hasRoute<StatsDestination>() == true -> 1
+        destination?.hasRoute<SettingsDestination>() == true -> 2
+        destination?.hasRoute<AboutDestination>() == true -> 3
+        else -> 0
+    }
+}
+
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -28,36 +40,39 @@ fun AppNavHost(
         navController = navController,
         startDestination = HomeDestination,
         modifier = modifier,
-        // Fancy sliding animations when moving between screens
         enterTransition = {
-            fadeIn(animationSpec = tween(3000)) + slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(3000)
-            )
+            // If the new tab is to the right of the old one, slide from the Right (Start)
+            // Otherwise, slide from the Left (End)
+            val direction = if (getRouteOrder(targetState.destination) > getRouteOrder(initialState.destination)) {
+                AnimatedContentTransitionScope.SlideDirection.Start
+            } else {
+                AnimatedContentTransitionScope.SlideDirection.End
+            }
+            fadeIn(animationSpec = tween(1000)) + slideIntoContainer(direction, animationSpec = tween(1000))
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(3000)) + slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(3000)
-            )
+            val direction = if (getRouteOrder(targetState.destination) > getRouteOrder(initialState.destination)) {
+                AnimatedContentTransitionScope.SlideDirection.Start
+            } else {
+                AnimatedContentTransitionScope.SlideDirection.End
+            }
+            fadeOut(animationSpec = tween(1000)) + slideOutOfContainer(direction, animationSpec = tween(1000))
         },
         popEnterTransition = {
-            fadeIn(animationSpec = tween(3000)) + slideIntoContainer(
+            fadeIn(animationSpec = tween(1000)) + slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(3000)
+                animationSpec = tween(1000)
             )
         },
         popExitTransition = {
-            fadeOut(animationSpec = tween(3000)) + slideOutOfContainer(
+            fadeOut(animationSpec = tween(1000)) + slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(3000)
+                animationSpec = tween(1000)
             )
         }
     ) {
-        // The main list of zoo sightings
         composable<HomeDestination> {
             val uiState by viewModel.uiState.collectAsState()
-
             ListScreen(
                 sightings = uiState.sightings,
                 onEditClick = { viewModel.selectSightingForEdit(it) },
@@ -65,23 +80,19 @@ fun AppNavHost(
             )
         }
 
-        // New Stats view to see how you're doing
         composable<StatsDestination> {
             val uiState by viewModel.uiState.collectAsState()
             StatsScreen(sightings = uiState.sightings)
         }
 
-        // App preferences
         composable<SettingsDestination> {
             val uiState by viewModel.uiState.collectAsState()
-
             SettingsScreen(
                 isSortByName = uiState.isSortByName,
                 onSortChange = { viewModel.toggleSortOrder(it) }
             )
         }
 
-        // About Screen
         composable<AboutDestination> {
             AboutScreen()
         }

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.klen0010.flinders.zootreasurehunt.R
 import kotlinx.serialization.Serializable
 
 // These objects are just labels for our screens so the navigation knows where to go
@@ -21,32 +22,32 @@ object AboutDestination
 @Serializable
 object SettingsDestination
 
-// This class helps us build the bottom bar by linking labels, icons, and destinations together
+// This class helps us build the bottom bar by linking label resources, icons, and destinations together
 sealed class BottomNavItem(
-    val label: String,
+    val labelRes: Int,
     val icon: ImageVector,
     val route: Any
 ) {
     data object Home : BottomNavItem(
-        "Home",
+        R.string.nav_home,
         Icons.Default.Home,
         HomeDestination
     )
 
     data object Stats : BottomNavItem(
-        "Stats",
+        R.string.nav_stats,
         Icons.Default.BarChart,
         StatsDestination
     )
 
     data object Settings : BottomNavItem(
-        "Settings",
+        R.string.nav_settings,
         Icons.Filled.Settings,
         SettingsDestination
     )
 
     data object About : BottomNavItem(
-        "About",
+        R.string.nav_about,
         Icons.Default.Info,
         AboutDestination
     )

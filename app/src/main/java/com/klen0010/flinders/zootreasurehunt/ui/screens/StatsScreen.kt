@@ -5,9 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.klen0010.flinders.zootreasurehunt.R
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
 
 // This screen shows the user's progress in the treasure hunt
@@ -27,7 +29,7 @@ fun StatsScreen(
     ) {
         // Title
         Text(
-            text = "Your Progress",
+            text = stringResource(id = R.string.stats_title),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(bottom = 32.dp, top = 16.dp)
@@ -48,7 +50,7 @@ fun StatsScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Animals Spotted",
+                    text = stringResource(id = R.string.stats_label),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -64,7 +66,7 @@ fun StatsScreen(
                 )
                 
                 Text(
-                    text = "${(progress * 100).toInt()}% Complete",
+                    text = stringResource(id = R.string.stats_percentage, (progress * 100).toInt()),
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -76,10 +78,10 @@ fun StatsScreen(
         // Message
         Text(
             text = when {
-                progress >= 1f -> "Amazing! You found them all! 🏆"
-                progress >= 0.5f -> "Over halfway there! Keep looking! 🔍"
-                progress > 0f -> "Great start! Keep exploring the zoo! 🦁"
-                else -> "Time to start your hunt! Good luck! 🗺️"
+                progress >= 1f -> stringResource(id = R.string.stats_msg_complete)
+                progress >= 0.5f -> stringResource(id = R.string.stats_msg_half)
+                progress > 0f -> stringResource(id = R.string.stats_msg_start)
+                else -> stringResource(id = R.string.stats_msg_none)
             },
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,

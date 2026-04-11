@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Búsqueda del Tesoro del Zoo</string>
+    <string name="found_label">¡ENCONTRADO!</string>
+    <string name="edit_animal">Editar Avistamiento</string>
+    <string name="notes_hint">Notas de Observación</string>
+    <string name="checkbox_found">Marcar como Encontrado</string>
+    <string name="save_btn">Guardar</string>
+    <string name="cancel_btn">Cancelar</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_stats">Estadísticas</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="nav_about">Acerca de</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Tu Progreso</string>
+    <string name="stats_label">Animales Avistados</string>
+    <string name="stats_percentage">%1$d%% Completado</string>
+    <string name="stats_msg_none">¡Es hora de empezar tu búsqueda! ¡Buena suerte! 🗺️</string>
+    <string name="stats_msg_start">¡Buen comienzo! ¡Sigue explorando el zoo! 🦁</string>
+    <string name="stats_msg_half">¡Más de la mitad! ¡Sigue buscando! 🔍</string>
+    <string name="stats_msg_complete">¡Increíble! ¡Los encontraste todos! 🏆</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_sort_label">Orden de Clasificación</string>
+    <string name="settings_sort_name">Ordenar por nombre</string>
+    <string name="settings_sort_name_desc">Orden alfabético (A-Z)</string>
+    <string name="settings_sort_date">Ordenar por fecha</string>
+    <string name="settings_sort_date_desc">Avistamientos recientes primero</string>
+
+    <!-- About Screen -->
+    <string name="about_text">Zoo Hunt\nCreado por\nKLEN0010</string>
+
+    <!-- Components -->
+    <string name="delete_label">Eliminar</string>
+    <string name="take_photo">Tomar Foto</string>
+    <string name="retake_photo">Volver a Tomar Foto</string>
+</resources>

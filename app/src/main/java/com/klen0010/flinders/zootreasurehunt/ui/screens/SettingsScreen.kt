@@ -11,8 +11,10 @@ import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.klen0010.flinders.zootreasurehunt.R
 
 // Modernized settings screen with a clean card-based layout
 @Composable
@@ -27,7 +29,7 @@ fun SettingsScreen(
     ) {
         // Page Title
         Text(
-            text = "Settings",
+            text = stringResource(id = R.string.settings_title),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(bottom = 24.dp, top = 16.dp)
@@ -35,7 +37,7 @@ fun SettingsScreen(
 
         // Category Label
         Text(
-            text = "Sort Order",
+            text = stringResource(id = R.string.settings_sort_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
@@ -47,8 +49,8 @@ fun SettingsScreen(
         ) {
             // Sort by Name Option
             ListItem(
-                headlineContent = { Text("Sort by name") },
-                supportingContent = { Text("Alphabetical order (A-Z)") },
+                headlineContent = { Text(stringResource(id = R.string.settings_sort_name)) },
+                supportingContent = { Text(stringResource(id = R.string.settings_sort_name_desc)) },
                 leadingContent = { 
                     Icon(Icons.Default.SortByAlpha, contentDescription = null) 
                 },
@@ -65,8 +67,8 @@ fun SettingsScreen(
 
             // Sort by Date Option
             ListItem(
-                headlineContent = { Text("Sort by date") },
-                supportingContent = { Text("Recent sightings first") },
+                headlineContent = { Text(stringResource(id = R.string.settings_sort_date)) },
+                supportingContent = { Text(stringResource(id = R.string.settings_sort_date_desc)) },
                 leadingContent = { 
                     Icon(Icons.Default.DateRange, contentDescription = null) 
                 },
