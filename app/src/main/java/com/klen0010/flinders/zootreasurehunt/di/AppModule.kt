@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+// This tells Hilt how to provide our repository to the rest of the app
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {

@@ -21,6 +21,7 @@ dataStore = "1.1.1"
 hilt = "2.54"
 ksp = "2.1.0-1.0.29"
 kotlinxSerializationJson = "1.8.0"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +56,9 @@ androidx-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-v
 androidx-data-store-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

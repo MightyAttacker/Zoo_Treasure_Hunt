@@ -35,11 +35,13 @@ import com.klen0010.flinders.zootreasurehunt.model.Sighting
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.roundToInt
 
+// Simple markers for where the card can sit
 private enum class DragAnchors {
     START,
     END,
 }
 
+// This wrapper adds a "swipe to delete" action to our animal cards
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipeableSighting(
@@ -51,6 +53,7 @@ fun SwipeableSighting(
     val snapAnimationSpec = spring<Float>()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     
+    // This state keeps track of how far we've swiped
     val dragState = remember(density, snapAnimationSpec, decayAnimationSpec) {
         AnchoredDraggableState(
             initialValue = DragAnchors.START,
@@ -61,6 +64,7 @@ fun SwipeableSighting(
         )
     }
 
+    // Keep an eye on the swipe—if it reaches the end, fire the swipe action
     LaunchedEffect(dragState) {
         snapshotFlow { dragState.settledValue }
             .collectLatest { settledValue ->
@@ -75,6 +79,7 @@ fun SwipeableSighting(
         modifier = Modifier
             .fillMaxWidth()
             .clip(cardShape)
+            // Figure out how wide we are so we know where to stop swiping
             .onSizeChanged { layoutSize ->
                 val dragEndPoint = layoutSize.width.toFloat()
                 dragState.updateAnchors(
@@ -85,6 +90,7 @@ fun SwipeableSighting(
                 )
             }
     ) {
+        // This is the red "Delete" background that peeks out
         Box(
             modifier = Modifier
                 .matchParentSize()
@@ -98,6 +104,8 @@ fun SwipeableSighting(
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
+        
+        // The actual card that slides over the red background
         Card(
             modifier = Modifier
                 .offset {

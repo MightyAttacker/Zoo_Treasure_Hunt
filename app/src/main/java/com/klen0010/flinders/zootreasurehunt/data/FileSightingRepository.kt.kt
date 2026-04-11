@@ -9,17 +9,20 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import javax.inject.Inject
 
-
+// This class handles saving and loading our zoo sightings to a file on the phone
 class FileSightingRepository @Inject constructor (
     @ApplicationContext private val context: Context
-) : SightingRepository {    val fileName: String = "sightings.json"
+) : SightingRepository {
+    val fileName: String = "sightings.json"
 
+    // Add a new animal sighting to our list
     override suspend fun addSighting(sighting: Sighting) {
         val currentList = loadSightings().toMutableList()
         currentList.add(sighting)
         saveSightings(currentList)
     }
 
+    // Update an existing sighting if we changed something
     override suspend fun updateSighting(sighting: Sighting) {
         val currentList = loadSightings().map {
             if (it.id == sighting.id) sighting else it
@@ -27,11 +30,13 @@ class FileSightingRepository @Inject constructor (
         saveSightings(currentList)
     }
 
+    // Remove a sighting from our list
     override suspend fun deleteSighting(sighting: Sighting) {
         val currentList = loadSightings().filter { it.id != sighting.id }
         saveSightings(currentList)
     }
 
+    // Convert the list to JSON and write it to internal storage
     override suspend fun saveSightings(sightings: List<Sighting>) {
         withContext(Dispatchers.IO){
             val jsonString = Json.encodeToString(sightings)
@@ -43,6 +48,7 @@ class FileSightingRepository @Inject constructor (
 
     }
 
+    // Some starter animals if the list is empty
     private fun getDefaultSightings(): List<Sighting>{
         return listOf(
             Sighting(name = "Lion", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/african-lion-ai.jpg"),
@@ -53,6 +59,7 @@ class FileSightingRepository @Inject constructor (
         )
     }
 
+    // Read the sightings from the file or give back the defaults if it's not there
     override suspend fun loadSightings(): List<Sighting> {
         return withContext(Dispatchers.IO) {
             val file = File(context.filesDir, fileName)
@@ -68,7 +75,4 @@ class FileSightingRepository @Inject constructor (
             }
         }
     }
-
-
-
 }

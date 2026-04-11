@@ -1,56 +1,83 @@
 package com.klen0010.flinders.zootreasurehunt.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.SortByAlpha
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
+// Modernized settings screen with a clean card-based layout
 @Composable
 fun SettingsScreen(
     isSortByName: Boolean,
     onSortChange: (Boolean) -> Unit
 ) {
-    Column{
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Page Title
         Text(
             text = "Settings",
-            color = Color.Black,
-            fontSize = 28.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .padding(top = 30.dp),
-            fontWeight = FontWeight.ExtraBold
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(bottom = 24.dp, top = 16.dp)
         )
+
+        // Category Label
         Text(
             text = "Sort Order",
-            color = Color.Black,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(start = 30.dp, top = 30.dp, bottom = 15.dp),
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
         )
-        Row{
-            RadioButton(
-                selected = isSortByName,
-                onClick = {onSortChange(true)}
+
+        // Grouping options in an elevated card for a polished look
+        ElevatedCard(
+            modifier = Modifier.selectableGroup()
+        ) {
+            // Sort by Name Option
+            ListItem(
+                headlineContent = { Text("Sort by name") },
+                supportingContent = { Text("Alphabetical order (A-Z)") },
+                leadingContent = { 
+                    Icon(Icons.Default.SortByAlpha, contentDescription = null) 
+                },
+                trailingContent = {
+                    RadioButton(
+                        selected = isSortByName,
+                        onClick = null // Click handled by ListItem
+                    )
+                },
+                modifier = Modifier.clickable { onSortChange(true) }
             )
-            Text("Sort by name")
-        }
-        Row{
-            RadioButton(
-                selected = !isSortByName,
-                onClick = {onSortChange(false)}
+            
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+
+            // Sort by Date Option
+            ListItem(
+                headlineContent = { Text("Sort by date") },
+                supportingContent = { Text("Recent sightings first") },
+                leadingContent = { 
+                    Icon(Icons.Default.DateRange, contentDescription = null) 
+                },
+                trailingContent = {
+                    RadioButton(
+                        selected = !isSortByName,
+                        onClick = null // Click handled by ListItem
+                    )
+                },
+                modifier = Modifier.clickable { onSortChange(false) }
             )
-            Text("Sort by date")
         }
     }
 }

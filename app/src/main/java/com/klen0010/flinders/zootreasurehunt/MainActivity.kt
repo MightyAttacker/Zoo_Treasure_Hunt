@@ -15,52 +15,54 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
-import com.klen0010.flinders.zootreasurehunt.navigation.AboutDestination
 import com.klen0010.flinders.zootreasurehunt.navigation.BottomNavItem
-import com.klen0010.flinders.zootreasurehunt.navigation.HomeDestination
-import com.klen0010.flinders.zootreasurehunt.navigation.SettingsDestination
 import com.klen0010.flinders.zootreasurehunt.ui.components.EditSightingDialog
-import com.klen0010.flinders.zootreasurehunt.ui.screens.AboutScreen
-import com.klen0010.flinders.zootreasurehunt.ui.screens.ListScreen
-import com.klen0010.flinders.zootreasurehunt.ui.screens.SettingsScreen
+import com.klen0010.flinders.zootreasurehunt.navigation.AppNavHost
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.navigation.NavDestination.Companion.hasRoute
 
+// This is the front door of your app
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            enableEdgeToEdge()
-            setContent {
-                MaterialTheme {
-                    ZooApp()
-                }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            MaterialTheme {
+                // Let's get the UI started
+                ZooApp()
             }
         }
     }
+}
 
+// The main layout for the whole app
 @Composable
 fun ZooApp() {
     val navController = rememberNavController()
-    val context = LocalContext.current
     val viewModel: ZooViewModel = viewModel()
-    val bottomItems = listOf(BottomNavItem.Home, BottomNavItem.Settings, BottomNavItem.About)
+    val bottomItems = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Stats,
+        BottomNavItem.Settings,
+        BottomNavItem.About
+    )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         bottomBar = {
+            // That bar at the bottom for switching screens
             NavigationBar {
                 bottomItems.forEach { item ->
-                    val isSelected = currentDestination?.route == item.route
+                    val isSelected = currentDestination?.hasRoute(item.route::class) == true
                     NavigationBarItem(
                         selected = isSelected,
                         onClick = {
@@ -77,49 +79,28 @@ fun ZooApp() {
             }
         }
     ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = HomeDestination,
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable<HomeDestination> {
-                    ListScreen(
-                        sightings = uiState.sightings,
-                        onEditClick = { animal ->
-                            viewModel.selectSightingForEdit(animal)
-                        },
-                        onDelete = { animal ->
-                            viewModel.deleteSighting(animal)
-                        }
-                    )
-                }
-                composable<SettingsDestination> {
-                    SettingsScreen(
-                        isSortByName = uiState.isSortByName,
-                        onSortChange = { viewModel.toggleSortOrder(it) }
-                    )
-                }
-                composable<AboutDestination> {
-                    AboutScreen()
-                }
-            }
+        // This handles showing the right screen based on where you are
+        AppNavHost(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding),
+            viewModel = viewModel
+        )
+        // If someone clicked edit, show the pop-up
         if (uiState.isDialogVisible) {
             uiState.selectedSighting?.let { sighting ->
                 EditSightingDialog(
                     sighting = sighting,
                     onDismiss = { viewModel.dismissDialog() },
-                    onSave = { viewModel.dismissDialog() }
+                    onSave = { viewModel.updateSighting(it) } // Updated to call updateSighting
                 )
             }
         }
-            }
-        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun ZooAppPreview() {
-    val context = LocalContext.current
-
     ZooTreasureHuntTheme {
         ZooApp()
     }
