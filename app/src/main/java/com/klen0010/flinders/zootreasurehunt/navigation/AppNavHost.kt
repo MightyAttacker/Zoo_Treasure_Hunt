@@ -17,7 +17,7 @@ import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
-// This is where we handle all the screen switching and animations
+// Handles all the screen switching and animations
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -71,7 +71,7 @@ fun AppNavHost(
             StatsScreen(sightings = uiState.sightings)
         }
 
-        // Tweak your app preferences here
+        // App preferences
         composable<SettingsDestination> {
             val uiState by viewModel.uiState.collectAsState()
 
@@ -81,7 +81,7 @@ fun AppNavHost(
             )
         }
 
-        // Just some info about the app
+        // About Screen
         composable<AboutDestination> {
             AboutScreen()
         }

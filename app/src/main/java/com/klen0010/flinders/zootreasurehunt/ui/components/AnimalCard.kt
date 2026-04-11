@@ -52,7 +52,7 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .graphicsLayer(scaleX = scale, scaleY = scale) // Applies the "squishy" scale effect
+            .graphicsLayer(scaleX = scale, scaleY = scale) // Applies the shrink scale effect
             .clickable(
                 interactionSource = interactionSource,
                 indication = null, // Disable default ripple to show off our scale better

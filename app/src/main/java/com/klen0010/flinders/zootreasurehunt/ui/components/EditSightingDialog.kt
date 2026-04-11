@@ -37,7 +37,7 @@ fun EditSightingDialog(sighting: Sighting, onDismiss: () -> Unit, onSave: (Sight
     var currentPhotoPath by remember { mutableStateOf(sighting.photoPath) }
     var tempPhotoUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Handles the camera magic for taking a picture
+    // Handles the camera for taking a picture
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
@@ -46,7 +46,7 @@ fun EditSightingDialog(sighting: Sighting, onDismiss: () -> Unit, onSave: (Sight
         }
     }
 
-    // The actual pop-up box
+    // The pop-up box
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(id = R.string.edit_animal)) },
@@ -67,7 +67,7 @@ fun EditSightingDialog(sighting: Sighting, onDismiss: () -> Unit, onSave: (Sight
                     )
                     Text(text = stringResource(id = R.string.checkbox_found))
                 }
-                // Button to fire up the camera
+                // Button to turn on the camera
                 Button(
                     onClick = {
                         val file = fileUtils.createImageFile()

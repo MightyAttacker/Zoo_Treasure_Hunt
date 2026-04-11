@@ -27,7 +27,7 @@ import com.klen0010.flinders.zootreasurehunt.navigation.AppNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.NavDestination.Companion.hasRoute
 
-// This is the front door of your app
+// This is the front door of the app
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
-                // Let's get the UI started
                 ZooApp()
             }
         }
@@ -59,7 +58,7 @@ fun ZooApp() {
 
     Scaffold(
         bottomBar = {
-            // That bar at the bottom for switching screens
+            // The bar at the bottom for switching screens
             NavigationBar {
                 bottomItems.forEach { item ->
                     val isSelected = currentDestination?.hasRoute(item.route::class) == true
@@ -91,7 +90,7 @@ fun ZooApp() {
                 EditSightingDialog(
                     sighting = sighting,
                     onDismiss = { viewModel.dismissDialog() },
-                    onSave = { viewModel.updateSighting(it) } // Updated to call updateSighting
+                    onSave = { viewModel.updateSighting(it) }
                 )
             }
         }

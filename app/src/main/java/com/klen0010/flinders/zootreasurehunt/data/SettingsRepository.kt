@@ -11,10 +11,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// DataStore is a modern way to save simple app settings
+// Save app settings
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-// This class remembers things like how you want to sort your list
+// Memory on how to sort your list
 class SettingsRepository @Inject constructor (
     @ApplicationContext private val context: Context
 ){
@@ -22,7 +22,7 @@ class SettingsRepository @Inject constructor (
         val SORT_BY_NAME = booleanPreferencesKey("sort_by_name")
     }
 
-    // A stream of updates for the sort preference
+    // Updates for the sort preference
     val sortByNameFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[SORT_BY_NAME] ?: true }
 

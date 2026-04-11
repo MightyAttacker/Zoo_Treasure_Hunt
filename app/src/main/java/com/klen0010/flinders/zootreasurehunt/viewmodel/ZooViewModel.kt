@@ -75,7 +75,7 @@ class ZooViewModel @Inject constructor(
         dismissDialog()
     }
 
-    // Goodbye animal!
+    // Delete animal
     fun deleteSighting(sighting: Sighting) {
         val newList = _rawSightings.value.filter { it.id != sighting.id }
         updateAndSave(newList)

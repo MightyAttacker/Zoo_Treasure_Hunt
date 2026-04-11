@@ -3,7 +3,7 @@ package com.klen0010.flinders.zootreasurehunt.model
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
-// This is the data model for a single animal sighting
+// Data model for a single animal sighting
 @Serializable
 data class Sighting(
     // We give every sighting a unique ID so we can find it later

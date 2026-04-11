@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
-// A simple screen to show who made the app
+// A screen to show who made the app
 @Composable
 fun AboutScreen() {
     Box(

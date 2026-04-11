@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import javax.inject.Inject
 
-// This class handles saving and loading our zoo sightings to a file on the phone
+// This class handles saving and loading zoo sightings to a file on the phone
 class FileSightingRepository @Inject constructor (
     @ApplicationContext private val context: Context
 ) : SightingRepository {
@@ -22,7 +22,7 @@ class FileSightingRepository @Inject constructor (
         saveSightings(currentList)
     }
 
-    // Update an existing sighting if we changed something
+    // Update an existing sighting if the user changed something
     override suspend fun updateSighting(sighting: Sighting) {
         val currentList = loadSightings().map {
             if (it.id == sighting.id) sighting else it
@@ -30,7 +30,7 @@ class FileSightingRepository @Inject constructor (
         saveSightings(currentList)
     }
 
-    // Remove a sighting from our list
+    // Remove a sighting from the list
     override suspend fun deleteSighting(sighting: Sighting) {
         val currentList = loadSightings().filter { it.id != sighting.id }
         saveSightings(currentList)
