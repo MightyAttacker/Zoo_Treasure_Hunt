@@ -3,6 +3,7 @@
     <string name="found_label">¡ENCONTRADO!</string>
     <string name="edit_animal">Editar Avistamiento</string>
     <string name="notes_hint">Notas de Observación</string>
+    <string name="notes_error">Las notas no pueden estar vacías</string>
     <string name="checkbox_found">Marcar como Encontrado</string>
     <string name="save_btn">Guardar</string>
     <string name="cancel_btn">Cancelar</string>
