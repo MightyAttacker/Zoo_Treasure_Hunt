@@ -1,5 +1,6 @@
 package com.klen0010.flinders.zootreasurehunt.ui.screens
 
+import android.hardware.SensorManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -11,15 +12,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.klen0010.flinders.zootreasurehunt.R
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
+import androidx.compose.ui.platform.LocalContext
+import com.klen0010.flinders.zootreasurehunt.ui.components.MiniMap
+import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 
 // This screen shows the user's progress in the treasure hunt
 @Composable
 fun StatsScreen(
-    sightings: List<Sighting>
+    sightings: List<Sighting>,
+    stepCount: Int,
+    hasStepCounter: Boolean,
+    viewModel: ZooViewModel
 ) {
+
     val total = sightings.size
     val found = sightings.count { it.isFound }
     val progress = if (total > 0) found.toFloat() / total else 0f
+
 
     Column(
         modifier = Modifier
@@ -87,5 +96,58 @@ fun StatsScreen(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = 32.dp)
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                if (!hasStepCounter) {
+                    Text("Step counter not supported on this device")
+                }else{
+                    Text(
+                        text = "Steps Taken",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "$stepCount",
+                    fontSize = 42.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
+
+        val context = LocalContext.current
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Text(
+                    text = "Your Location",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                MiniMap(context, sightings, viewModel)
+            }
+        }
     }
 }

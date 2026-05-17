@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.File
 import javax.inject.Inject
+import com.klen0010.flinders.zootreasurehunt.R
 
 // This class handles saving and loading zoo sightings to a file on the phone
 class FileSightingRepository @Inject constructor (
@@ -51,11 +52,38 @@ class FileSightingRepository @Inject constructor (
     // Some starter animals if the list is empty
     private fun getDefaultSightings(): List<Sighting>{
         return listOf(
-            Sighting(name = "Lion", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/african-lion-ai.jpg"),
-            Sighting(name = "Red Panda", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/red-panda-ai.jpg"),
-            Sighting(name = "Giraffe", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/giraffe-ai.jpg"),
-            Sighting(name = "Kangaroo", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/red-kangaroo-ai.jpg"),
-            Sighting(name = "Penguin", imageUrl = "https://wilk0077.github.io/comp2012-images/assets-sm/penguin-ai.jpg")
+            Sighting(name = "Sumatran Tiger",
+                imageRes = R.drawable.sumatran_tiger,
+                latitude = -34.912324,
+                longitude = 138.606814),
+            Sighting(name = "Panda",
+                imageRes = R.drawable.panda,
+                latitude = -34.914280,
+                longitude = 138.606413),
+            Sighting(name = "American Alligator",
+                imageRes = R.drawable.american_alligator,
+                latitude = -34.912836,
+                longitude = 138.608068),
+            Sighting(name = "Australian Pelican",
+                imageRes = R.drawable.australian_pelican,
+                latitude = -34.913256,
+                longitude = 138.606543),
+            Sighting(name = "Meerkat",
+                imageRes = R.drawable.meerkat,
+                latitude = -34.913348,
+                longitude = 138.605560),
+            Sighting(name = "Komodo Dragon",
+                imageRes = R.drawable.komodo_dragon,
+                latitude = -34.914521,
+                longitude = 138.605755),
+            Sighting(name = "Giraffe",
+                imageRes = R.drawable.giraffe,
+                latitude = -34.913221,
+                longitude = 138.605342),
+            Sighting(name = "Dingo",
+                imageRes = R.drawable.dingo,
+                latitude = -34.912513,
+                longitude = 138.606294)
         )
     }
 

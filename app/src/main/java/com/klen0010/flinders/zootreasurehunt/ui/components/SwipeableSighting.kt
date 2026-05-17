@@ -1,7 +1,5 @@
 package com.klen0010.flinders.zootreasurehunt.ui.components
 
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -46,6 +44,7 @@ private enum class DragAnchors {
 @Composable
 fun SwipeableSighting(
     sighting: Sighting,
+    distance: Float?,
     onEditClick: (Sighting) -> Unit,
     onSwipe: () -> Unit = {}
 ) {
@@ -122,6 +121,7 @@ fun SwipeableSighting(
         ) {
             AnimalCard(
                 sighting = sighting,
+                distance = distance,
                 onClick = { onEditClick(sighting) }
             )
         }

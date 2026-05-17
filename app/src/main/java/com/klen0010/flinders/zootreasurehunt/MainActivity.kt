@@ -1,6 +1,10 @@
 package com.klen0010.flinders.zootreasurehunt
 
+import android.hardware.Sensor
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
+import com.google.android.gms.location.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,42 +16,113 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
-import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
+import com.google.android.gms.location.LocationResult
+import com.klen0010.flinders.zootreasurehunt.navigation.AppNavHost
 import com.klen0010.flinders.zootreasurehunt.navigation.BottomNavItem
 import com.klen0010.flinders.zootreasurehunt.ui.components.EditSightingDialog
-import com.klen0010.flinders.zootreasurehunt.navigation.AppNavHost
+import com.klen0010.flinders.zootreasurehunt.ui.theme.ZooTreasureHuntTheme
+import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.navigation.NavDestination.Companion.hasRoute
+import android.content.Context
+import android.hardware.SensorManager
+import com.klen0010.flinders.zootreasurehunt.data.StepCounterManager
 
-// This is the front door of your app
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+    private lateinit var stepCounterManager: StepCounterManager
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        stepCounterManager = StepCounterManager(this)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
+            val viewModel: ZooViewModel = viewModel()
+
+            LaunchedEffect(Unit) {
+                stepCounterManager.steps.collect {
+                    viewModel.updateSteps(it)
+                }
+            }
+
+            viewModel.setHasStepCounter(stepCounterManager.hasStepCounter)
+
             MaterialTheme {
-                // Let's get the UI started
-                ZooApp()
+                ZooApp(viewModel)
+            }
+        }
+        startLocationUpdates()
+        stepCounterManager.startListening()
+        val sensorManager =
+            getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+        val sensor =
+            sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+
+        if (sensor == null) {
+            Log.d("STEP", "No step counter sensor")
+        } else {
+            Log.d("STEP", "Step counter sensor found")
+        }
+
+    }
+
+    private val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L)
+        .setWaitForAccurateLocation(false)
+        .setMinUpdateIntervalMillis(5000)
+        .setMaxUpdateDelayMillis(15000)
+        .build()
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
             }
         }
     }
+
+    private fun startLocationUpdates() {
+        try {
+            fusedLocationClient?.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (e: SecurityException) {
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stepCounterManager.stopListening()
+    }
+
 }
 
-// The main layout for the whole app
 @Composable
-fun ZooApp() {
+fun ZooApp(viewModel: ZooViewModel) {
     val navController = rememberNavController()
-    val viewModel: ZooViewModel = viewModel()
     val bottomItems = listOf(
         BottomNavItem.Home,
         BottomNavItem.Stats,
@@ -100,10 +175,11 @@ fun ZooApp() {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun ZooAppPreview() {
     ZooTreasureHuntTheme {
-        ZooApp()
+        Text("Preview")
     }
 }

@@ -15,16 +15,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.LatLng
 import com.klen0010.flinders.zootreasurehunt.R
+import com.klen0010.flinders.zootreasurehunt.data.distanceMeters
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
 import com.klen0010.flinders.zootreasurehunt.ui.components.SwipeableSighting
+import androidx.compose.runtime.State
 
 @Composable
 fun ListScreen(
     sightings: List<Sighting>,
+    userLocation: LatLng,
     onEditClick: (Sighting) -> Unit,
     onDelete: (Sighting) -> Unit
-) {
+){
     val listState = rememberLazyListState()
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         LazyColumn(
@@ -48,8 +52,17 @@ fun ListScreen(
                 items = sightings,
                 key = { it.id }
             ) { animal ->
+
+                val distance = if (animal.latitude != null && animal.longitude != null) {
+                    distanceMeters(
+                        userLocation,
+                        LatLng(animal.latitude, animal.longitude)
+                    )
+                } else null
+
                 SwipeableSighting(
                     sighting = animal,
+                    distance = distance,
                     onEditClick = { onEditClick(animal) },
                     onSwipe = { onDelete(animal) }
                 )

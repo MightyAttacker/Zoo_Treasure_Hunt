@@ -37,6 +37,7 @@ fun AppNavHost(
     viewModel: ZooViewModel
 ) {
     NavHost(
+
         navController = navController,
         startDestination = HomeDestination,
         modifier = modifier,
@@ -73,8 +74,10 @@ fun AppNavHost(
     ) {
         composable<HomeDestination> {
             val uiState by viewModel.uiState.collectAsState()
+            val userLocation by viewModel.userLocation.collectAsState()
             ListScreen(
                 sightings = uiState.sightings,
+                userLocation = userLocation,
                 onEditClick = { viewModel.selectSightingForEdit(it) },
                 onDelete = { viewModel.deleteSighting(it) }
             )
@@ -82,7 +85,14 @@ fun AppNavHost(
 
         composable<StatsDestination> {
             val uiState by viewModel.uiState.collectAsState()
-            StatsScreen(sightings = uiState.sightings)
+            val steps by viewModel.stepCount.collectAsState()
+            val hasStepCounter by viewModel.hasStepCounter.collectAsState()
+            StatsScreen(
+                sightings = uiState.sightings,
+                stepCount = steps,
+                hasStepCounter = hasStepCounter,
+                viewModel = viewModel
+            )
         }
 
         composable<SettingsDestination> {

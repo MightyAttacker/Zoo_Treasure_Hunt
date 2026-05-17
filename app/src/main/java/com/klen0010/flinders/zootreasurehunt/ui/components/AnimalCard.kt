@@ -27,17 +27,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import coil3.compose.AsyncImage
 import com.klen0010.flinders.zootreasurehunt.R
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
 
 // This is the little box that shows each animal in the list
 @Composable
-fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
+fun AnimalCard(
+    sighting: Sighting,
+    distance: Float?,
+    onClick: () -> Unit) {
     // Detects if the user is currently pressing down on the card
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    
+    val canMarkFound = (distance ?: Float.MAX_VALUE) <= 50f
+
     // Slow scale animation: shrinks to 90% size when pressed
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.9f else 1f,
@@ -47,8 +53,7 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
 
     val cardColor = if (sighting.isFound) Color(0xFFE8F5E9) else Color(0xFFF5F5F5)
     val textColor = if (sighting.isFound) Color(0xFF2E7D32) else Color.Black
-    val imageModel = sighting.photoPath ?: sighting.imageUrl
-    
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +61,11 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
             .clickable(
                 interactionSource = interactionSource,
                 indication = null, // Disable default ripple to show off our scale better
-                onClick = onClick
+                onClick = {
+                    if (canMarkFound) {
+                        onClick()
+                    }
+                }
             ),
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
@@ -64,13 +73,23 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage (
-                model = imageModel,
-                contentDescription = sighting.name,
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(end = 8.dp)
-            )
+            if (sighting.photoPath != null) {
+                AsyncImage(
+                    model = sighting.photoPath,
+                    contentDescription = sighting.name,
+                    placeholder = painterResource(sighting.imageRes),
+                    error = painterResource(sighting.imageRes),
+                    modifier = Modifier.size(64.dp).padding(end = 8.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = sighting.imageRes),
+                    contentDescription = sighting.name,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .padding(end = 8.dp)
+                )
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = sighting.name,
@@ -90,6 +109,25 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
                         color = Color.Gray
                     )
                 }
+
+                if (distance != null) {
+                    Text(
+                        text = "Distance: ${distance.toInt()}m",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray
+                    )
+                }
+
+                if (distance != null) {
+                    Text(
+                        text = if (canMarkFound)
+                            "You are close enough!"
+                        else
+                            "Get within 50m to unlock",
+                        fontSize = 12.sp,
+                        color = if (canMarkFound) Color(0xFF2E7D32) else Color.Gray
+                    )
+                }
             }
             
             // Animates the "Found" label sliding in from the right
@@ -103,6 +141,7 @@ fun AnimalCard(sighting: Sighting, onClick: () -> Unit) {
                     color = textColor
                 )
             }
+
         }
     }
 }

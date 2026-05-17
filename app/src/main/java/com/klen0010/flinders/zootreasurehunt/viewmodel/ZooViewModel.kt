@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,6 +25,20 @@ class ZooViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     private val _rawSightings = MutableStateFlow<List<Sighting>>(emptyList())
     private val _uiState = MutableStateFlow(ZooUiState())
+
+    private val _stepCount = MutableStateFlow(0)
+    val stepCount: StateFlow<Int> = _stepCount
+
+    fun updateSteps(steps: Int) {
+        _stepCount.value = steps
+    }
+
+    private val _hasStepCounter = MutableStateFlow(false)
+    val hasStepCounter: StateFlow<Boolean> = _hasStepCounter
+
+    fun setHasStepCounter(value: Boolean) {
+        _hasStepCounter.value = value
+    }
     
     // This is what the UI observes to stay up to date
     val uiState:StateFlow<ZooUiState> = _uiState.asStateFlow()
@@ -86,5 +101,15 @@ class ZooViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.setSortByName(sortByName)
         }
+    }
+
+    private val _userLocation = MutableStateFlow(
+        LatLng(-34.9143, 138.6050)// default Adelaide Zoo
+    )
+
+    val userLocation: StateFlow<LatLng> = _userLocation.asStateFlow()
+
+    fun updateUserLocation(location: LatLng) {
+        _userLocation.value = location
     }
 }
