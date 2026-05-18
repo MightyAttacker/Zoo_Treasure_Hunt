@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,17 +17,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.klen0010.flinders.zootreasurehunt.R
 
-// Modernized settings screen with a clean card-based layout
+enum class SortOption {
+    NAME,
+    DATE,
+    DISTANCE
+}
+
 @Composable
 fun SettingsScreen(
-    isSortByName: Boolean,
-    onSortChange: (Boolean) -> Unit
+    selectedSort: SortOption,
+    onSortChange: (SortOption) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
         // Page Title
         Text(
             text = stringResource(id = R.string.settings_title),
@@ -43,42 +50,78 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
         )
 
-        // Grouping options in an elevated card for a polished look
         ElevatedCard(
             modifier = Modifier.selectableGroup()
         ) {
-            // Sort by Name Option
+
+            // Sort A-Z
             ListItem(
-                headlineContent = { Text(stringResource(id = R.string.settings_sort_name)) },
-                supportingContent = { Text(stringResource(id = R.string.settings_sort_name_desc)) },
-                leadingContent = { 
-                    Icon(Icons.Default.SortByAlpha, contentDescription = null) 
+                headlineContent = {
+                    Text(stringResource(id = R.string.settings_sort_name))
+                },
+                supportingContent = {
+                    Text(stringResource(id = R.string.settings_sort_name_desc))
+                },
+                leadingContent = {
+                    Icon(Icons.Default.SortByAlpha, contentDescription = null)
                 },
                 trailingContent = {
                     RadioButton(
-                        selected = isSortByName,
-                        onClick = null // Click handled by ListItem
+                        selected = selectedSort == SortOption.NAME,
+                        onClick = null
                     )
                 },
-                modifier = Modifier.clickable { onSortChange(true) }
+                modifier = Modifier.clickable {
+                    onSortChange(SortOption.NAME)
+                }
             )
-            
+
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-            // Sort by Date Option
+            // Sort by Date
             ListItem(
-                headlineContent = { Text(stringResource(id = R.string.settings_sort_date)) },
-                supportingContent = { Text(stringResource(id = R.string.settings_sort_date_desc)) },
-                leadingContent = { 
-                    Icon(Icons.Default.DateRange, contentDescription = null) 
+                headlineContent = {
+                    Text(stringResource(id = R.string.settings_sort_date))
+                },
+                supportingContent = {
+                    Text(stringResource(id = R.string.settings_sort_date_desc))
+                },
+                leadingContent = {
+                    Icon(Icons.Default.DateRange, contentDescription = null)
                 },
                 trailingContent = {
                     RadioButton(
-                        selected = !isSortByName,
-                        onClick = null // Click handled by ListItem
+                        selected = selectedSort == SortOption.DATE,
+                        onClick = null
                     )
                 },
-                modifier = Modifier.clickable { onSortChange(false) }
+                modifier = Modifier.clickable {
+                    onSortChange(SortOption.DATE)
+                }
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+
+            // Sort by Distance
+            ListItem(
+                headlineContent = {
+                    Text(stringResource(id = R.string.settings_sort_distance))
+                },
+                supportingContent = {
+                    Text(stringResource(id = R.string.settings_sort_distance_desc))
+                },
+                leadingContent = {
+                    Icon(Icons.Default.Place, contentDescription = null)
+                },
+                trailingContent = {
+                    RadioButton(
+                        selected = selectedSort == SortOption.DISTANCE,
+                        onClick = null
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onSortChange(SortOption.DISTANCE)
+                }
             )
         }
     }

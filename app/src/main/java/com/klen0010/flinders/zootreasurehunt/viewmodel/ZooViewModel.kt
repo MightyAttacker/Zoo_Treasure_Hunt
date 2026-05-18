@@ -15,6 +15,8 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import com.klen0010.flinders.zootreasurehunt.ui.screens.SortOption
+
 
 // This is the brain of our app—it manages all the data and logic
 @HiltViewModel
@@ -43,22 +45,38 @@ class ZooViewModel @Inject constructor(
     // This is what the UI observes to stay up to date
     val uiState:StateFlow<ZooUiState> = _uiState.asStateFlow()
 
-    init{
-        // Load up our saved sightings when the app starts
+    init {
+        // Load saved sightings
         viewModelScope.launch {
-            val savedSightings = repository.loadSightings()
-            _rawSightings.value = savedSightings
+            _rawSightings.value = repository.loadSightings()
         }
-        
-        // Combine the list with our settings to sort it correctly
+
+        // Combine sightings + sort option
         viewModelScope.launch {
-            combine(_rawSightings, settingsRepository.sortByNameFlow) { list, sortByName ->
-                val sortedList = if (sortByName) {
-                    list.sortedBy { it.name }
-                } else {
-                    list.sortedByDescending { it.isFound }
+            combine(
+                _rawSightings,
+                settingsRepository.sortOptionFlow
+            ) { list, sortOption ->
+
+                val sortedList = when (sortOption) {
+
+                    SortOption.NAME -> {
+                        list.sortedBy { it.name }
+                    }
+
+                    SortOption.DATE -> {
+                        list
+                    }
+
+                    SortOption.DISTANCE -> {
+                        list
+                    }
                 }
-                _uiState.value.copy(sightings = sortedList, isSortByName = sortByName)
+
+                _uiState.value.copy(
+                    sightings = sortedList,
+                    selectedSort = sortOption
+                )
             }.collect { newState ->
                 _uiState.value = newState
             }
@@ -97,9 +115,9 @@ class ZooViewModel @Inject constructor(
     }
 
     // Change how the list is sorted and remember it
-    fun toggleSortOrder(sortByName: Boolean) {
+    fun toggleSortOrder(sortOption: SortOption) {
         viewModelScope.launch {
-            settingsRepository.setSortByName(sortByName)
+            settingsRepository.setSortOption(sortOption)
         }
     }
 

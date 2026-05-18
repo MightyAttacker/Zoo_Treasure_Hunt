@@ -30,6 +30,8 @@
     <string name="settings_sort_name_desc">Alphabetical order (A-Z)</string>
     <string name="settings_sort_date">Sort by date</string>
     <string name="settings_sort_date_desc">Recent sightings first</string>
+    <string name="settings_sort_distance">Sort by Distance</string>
+    <string name="settings_sort_distance_desc">Closest sightings appear first</string>
 
     <!-- About Screen -->
     <string name="about_text">Zoo Hunt\nCreated by\nKLEN0010</string>

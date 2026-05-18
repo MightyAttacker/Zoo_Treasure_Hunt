@@ -18,6 +18,9 @@ import com.klen0010.flinders.zootreasurehunt.ui.screens.StatsScreen
 import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.google.android.gms.maps.model.LatLng
+import com.klen0010.flinders.zootreasurehunt.data.distanceMeters
+import com.klen0010.flinders.zootreasurehunt.ui.screens.SortOption
 
 // Helper to figure out the order of our tabs
 private fun getRouteOrder(destination: NavDestination?): Int {
@@ -73,10 +76,37 @@ fun AppNavHost(
         }
     ) {
         composable<HomeDestination> {
+
             val uiState by viewModel.uiState.collectAsState()
             val userLocation by viewModel.userLocation.collectAsState()
+
+            val sortedSightings = when (uiState.selectedSort) {
+
+                SortOption.NAME -> {
+                    uiState.sightings.sortedBy { it.name }
+                }
+
+                SortOption.DATE -> {
+                    uiState.sightings
+                }
+
+                SortOption.DISTANCE -> {
+                    uiState.sightings.sortedBy { sighting ->
+
+                        val lat = sighting.latitude
+                        val lng = sighting.longitude
+
+                        if (lat != null && lng != null) {
+                            distanceMeters(userLocation, LatLng(lat, lng)).toDouble()
+                        } else {
+                            Double.MAX_VALUE
+                        }
+                    }
+                }
+            }
+
             ListScreen(
-                sightings = uiState.sightings,
+                sightings = sortedSightings,
                 userLocation = userLocation,
                 onEditClick = { viewModel.selectSightingForEdit(it) },
                 onDelete = { viewModel.deleteSighting(it) }
@@ -98,7 +128,7 @@ fun AppNavHost(
         composable<SettingsDestination> {
             val uiState by viewModel.uiState.collectAsState()
             SettingsScreen(
-                isSortByName = uiState.isSortByName,
+                selectedSort = uiState.selectedSort,
                 onSortChange = { viewModel.toggleSortOrder(it) }
             )
         }

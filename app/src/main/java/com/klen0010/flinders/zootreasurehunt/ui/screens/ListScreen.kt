@@ -20,7 +20,6 @@ import com.klen0010.flinders.zootreasurehunt.R
 import com.klen0010.flinders.zootreasurehunt.data.distanceMeters
 import com.klen0010.flinders.zootreasurehunt.model.Sighting
 import com.klen0010.flinders.zootreasurehunt.ui.components.SwipeableSighting
-import androidx.compose.runtime.State
 
 @Composable
 fun ListScreen(
