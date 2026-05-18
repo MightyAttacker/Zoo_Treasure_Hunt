@@ -2,6 +2,7 @@ package com.klen0010.flinders.zootreasurehunt.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -22,6 +23,9 @@ object AboutDestination
 @Serializable
 object SettingsDestination
 
+@Serializable
+object BadgesDestination
+
 // This class helps us build the bottom bar by linking label resources, icons, and destinations together
 sealed class BottomNavItem(
     val labelRes: Int,
@@ -38,6 +42,12 @@ sealed class BottomNavItem(
         R.string.nav_stats,
         Icons.Default.BarChart,
         StatsDestination
+    )
+
+    data object Badges : BottomNavItem(
+        R.string.nav_badges,
+        Icons.Default.EmojiEvents,
+        BadgesDestination
     )
 
     data object Settings : BottomNavItem(

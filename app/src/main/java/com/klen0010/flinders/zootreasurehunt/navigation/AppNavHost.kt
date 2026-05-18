@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.klen0010.flinders.zootreasurehunt.ui.screens.AboutScreen
 import com.klen0010.flinders.zootreasurehunt.ui.screens.ListScreen
+import com.klen0010.flinders.zootreasurehunt.ui.screens.BadgeScreen
 import com.klen0010.flinders.zootreasurehunt.ui.screens.SettingsScreen
 import com.klen0010.flinders.zootreasurehunt.ui.screens.StatsScreen
 import com.klen0010.flinders.zootreasurehunt.viewmodel.ZooViewModel
@@ -27,8 +28,9 @@ private fun getRouteOrder(destination: NavDestination?): Int {
     return when {
         destination?.hasRoute<HomeDestination>() == true -> 0
         destination?.hasRoute<StatsDestination>() == true -> 1
-        destination?.hasRoute<SettingsDestination>() == true -> 2
-        destination?.hasRoute<AboutDestination>() == true -> 3
+        destination?.hasRoute<BadgesDestination>() == true -> 2
+        destination?.hasRoute<SettingsDestination>() == true -> 3
+        destination?.hasRoute<AboutDestination>() == true -> 4
         else -> 0
     }
 }
@@ -122,6 +124,17 @@ fun AppNavHost(
                 stepCount = steps,
                 hasStepCounter = hasStepCounter,
                 viewModel = viewModel
+            )
+        }
+
+        composable<BadgesDestination> {
+
+            val badges by viewModel.badges.collectAsState()
+            val steps by viewModel.stepCount.collectAsState()
+
+            BadgeScreen(
+                badges = badges,
+                currentSteps = steps
             )
         }
 

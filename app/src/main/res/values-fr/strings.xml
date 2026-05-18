@@ -11,6 +11,7 @@
     <!-- Navigation -->
     <string name="nav_home">Accueil</string>
     <string name="nav_stats">Stats</string>
+    <string name="nav_badges">Badges</string>
     <string name="nav_settings">Paramètres</string>
     <string name="nav_about">À propos</string>
 

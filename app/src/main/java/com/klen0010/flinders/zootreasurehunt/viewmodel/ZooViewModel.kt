@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import com.google.android.gms.maps.model.LatLng
+import com.klen0010.flinders.zootreasurehunt.model.Badge
+import com.klen0010.flinders.zootreasurehunt.model.BadgeRarity
 import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -31,19 +33,65 @@ class ZooViewModel @Inject constructor(
     private val _stepCount = MutableStateFlow(0)
     val stepCount: StateFlow<Int> = _stepCount
 
-    fun updateSteps(steps: Int) {
-        _stepCount.value = steps
-    }
-
     private val _hasStepCounter = MutableStateFlow(false)
     val hasStepCounter: StateFlow<Boolean> = _hasStepCounter
+    private val _badges = MutableStateFlow<List<Badge>>(emptyList())
+    val badges: StateFlow<List<Badge>> = _badges
+
+    private var previousUnlockedBadges = emptySet<String>()
+
+    val badgeList = listOf(
+        Badge("First Tracks", 500, rarity = BadgeRarity.BRONZE),
+        Badge("Trail Walker", 1000, rarity = BadgeRarity.BRONZE),
+        Badge("Explorer", 2000, rarity = BadgeRarity.SILVER),
+        Badge("Adventurer", 5000, rarity = BadgeRarity.SILVER),
+        Badge("Expeditionist", 10000, rarity = BadgeRarity.GOLD),
+        Badge("Savannah Legend", 20000, rarity = BadgeRarity.DIAMOND)
+    )
 
     fun setHasStepCounter(value: Boolean) {
         _hasStepCounter.value = value
     }
-    
+
+    fun updateSteps(steps: Int) {
+        _stepCount.value = steps
+
+        val updatedBadges = badgeList.map { badge ->
+            badge.copy(unlocked = steps >= badge.requiredSteps)
+        }
+
+        _badges.value = updatedBadges
+
+        // Detect newly unlocked badge
+        val newlyUnlocked = updatedBadges
+            .filter { it.unlocked }
+            .filter { it.name !in previousUnlockedBadges }
+
+        if (newlyUnlocked.isNotEmpty()) {
+            newlyUnlocked.forEach { badge ->
+                triggerBadgeUnlockedEvent(badge)
+            }
+        }
+
+        previousUnlockedBadges = updatedBadges
+            .filter { it.unlocked }
+            .map { it.name }
+            .toSet()
+    }
+
+    private val _badgeEvents = MutableStateFlow<Badge?>(null)
+    val badgeEvents: StateFlow<Badge?> = _badgeEvents.asStateFlow()
+
+    private fun triggerBadgeUnlockedEvent(badge: Badge) {
+        _badgeEvents.value = badge
+    }
+
     // This is what the UI observes to stay up to date
     val uiState:StateFlow<ZooUiState> = _uiState.asStateFlow()
+
+    fun clearBadgeEvent() {
+        _badgeEvents.value = null
+    }
 
     init {
         // Load saved sightings

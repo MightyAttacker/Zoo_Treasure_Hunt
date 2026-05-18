@@ -36,6 +36,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.Context
 import android.hardware.SensorManager
 import com.klen0010.flinders.zootreasurehunt.data.StepCounterManager
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.klen0010.flinders.zootreasurehunt.ui.components.BadgeUnlockedOverlay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,11 +55,36 @@ class MainActivity : ComponentActivity() {
 
         stepCounterManager = StepCounterManager(this)
 
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                100
+            )
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             val viewModel: ZooViewModel = viewModel()
+            val badgeEvent by viewModel.badgeEvents.collectAsState()
+
+            LaunchedEffect(badgeEvent) {
+                badgeEvent?.let { badge ->
+
+                    // simple popup first (we can upgrade later)
+                    android.widget.Toast.makeText(
+                        this@MainActivity,
+                        "🏆 Badge Unlocked: ${badge.name}",
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
 
             LaunchedEffect(Unit) {
                 stepCounterManager.steps.collect {
@@ -123,9 +153,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ZooApp(viewModel: ZooViewModel) {
     val navController = rememberNavController()
+    val badgeEvent by viewModel.badgeEvents.collectAsState()
+    val steps by viewModel.stepCount.collectAsState()
+
     val bottomItems = listOf(
         BottomNavItem.Home,
         BottomNavItem.Stats,
+        BottomNavItem.Badges,
         BottomNavItem.Settings,
         BottomNavItem.About
     )
@@ -162,6 +196,13 @@ fun ZooApp(viewModel: ZooViewModel) {
             modifier = Modifier.padding(innerPadding),
             viewModel = viewModel
         )
+
+        if (badgeEvent != null) {
+            BadgeUnlockedOverlay(
+                badge = badgeEvent!!,
+                onDismiss = { viewModel.clearBadgeEvent() }
+            )
+        }
         // If someone clicked edit, show the pop-up
         if (uiState.isDialogVisible) {
             uiState.selectedSighting?.let { sighting ->
