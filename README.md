@@ -1,9 +1,20 @@
-Zoo Treasure Hunt — An Android scavenger-hunt app for zoo visitors. 
-Users locate and photograph animals around the zoo, tracked via real-time GPS and a step counter, 
-with progress visualized on an integrated Google Maps view. Step-goal badges reward exploration and gamify the experience.
+## Zoo Treasure Hunt
 
-Tech: Android (Kotlin), Google Maps API, device location services, 
-step sensor (pedometer) API, camera integration
+A native Android scavenger-hunt app for zoo visitors. Users locate and 
+photograph animals around the zoo, with progress tracked via real-time 
+GPS and a step counter, visualised on an integrated Google Maps view. 
+Step-goal badges reward exploration.
 
-Highlights: Combined three device sensors (GPS, accelerometer/step counter, camera) 
-into one cohesive UX; designed a badge/reward system to drive engagement
+**Tech stack:** Kotlin, Jetpack Compose, MVVM (ViewModel + StateFlow), 
+Hilt (DI), Room + DataStore (persistence), WorkManager (background step 
+tracking), Ktor (networking), Coil (image loading), Google Maps Compose 
+SDK, FusedLocationProviderClient, native step-counter sensor API, 
+in-app camera capture.
+
+**Highlights:**
+- Combined three device sensors (GPS, step counter, camera) into one 
+  cohesive UX
+- Clean MVVM architecture with dependency injection via Hilt
+- Background step tracking that survives app closure (WorkManager)
+
+Solo project, built end-to-end.
