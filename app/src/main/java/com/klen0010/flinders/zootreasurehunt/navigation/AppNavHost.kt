@@ -77,11 +77,13 @@ fun AppNavHost(
             )
         }
     ) {
+        //Home Screen
         composable<HomeDestination> {
 
             val uiState by viewModel.uiState.collectAsState()
             val userLocation by viewModel.userLocation.collectAsState()
 
+            //Sort by function
             val sortedSightings = when (uiState.selectedSort) {
 
                 SortOption.NAME -> {
@@ -115,6 +117,7 @@ fun AppNavHost(
             )
         }
 
+        //Stats Screen
         composable<StatsDestination> {
             val uiState by viewModel.uiState.collectAsState()
             val steps by viewModel.stepCount.collectAsState()
@@ -127,6 +130,7 @@ fun AppNavHost(
             )
         }
 
+        //Badge Screen
         composable<BadgesDestination> {
 
             val badges by viewModel.badges.collectAsState()
@@ -138,6 +142,7 @@ fun AppNavHost(
             )
         }
 
+        //Settings Screen
         composable<SettingsDestination> {
             val uiState by viewModel.uiState.collectAsState()
             SettingsScreen(
@@ -146,6 +151,7 @@ fun AppNavHost(
             )
         }
 
+        //About Screen
         composable<AboutDestination> {
             AboutScreen()
         }

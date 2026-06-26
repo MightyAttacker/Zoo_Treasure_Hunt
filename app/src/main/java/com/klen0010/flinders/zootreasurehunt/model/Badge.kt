@@ -2,6 +2,7 @@ package com.klen0010.flinders.zootreasurehunt.model
 
 import androidx.compose.ui.graphics.Color
 
+//Badge Rarity Colours
 enum class BadgeRarity {
     BRONZE,
     SILVER,
@@ -9,6 +10,7 @@ enum class BadgeRarity {
     DIAMOND
 }
 
+//Badge Class
 data class Badge(
     val name: String,
     val requiredSteps: Int,
@@ -16,6 +18,7 @@ data class Badge(
     val rarity: BadgeRarity = BadgeRarity.BRONZE
 )
 
+//Badge Color Function
 fun rarityColor(rarity: BadgeRarity): Color {
     return when (rarity) {
         BadgeRarity.BRONZE -> Color(0xFFCD7F32)

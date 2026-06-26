@@ -36,7 +36,6 @@ fun BadgeUnlockedOverlay(
             animationSpec = tween(200)
         )
 
-        // optional sound hook (see step 5)
         delay(1500)
 
         onDismiss()

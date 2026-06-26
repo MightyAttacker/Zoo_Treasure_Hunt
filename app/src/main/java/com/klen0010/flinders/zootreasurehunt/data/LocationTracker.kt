@@ -6,11 +6,13 @@ import android.os.Looper
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 
+// This class handles getting the user's location
 class LocationTracker(context: Context) {
 
     private val fusedLocationClient =
         LocationServices.getFusedLocationProviderClient(context)
 
+    // Start listening for location updates
     @SuppressLint("MissingPermission")
     fun start(onLocation: (LatLng) -> Unit) {
 

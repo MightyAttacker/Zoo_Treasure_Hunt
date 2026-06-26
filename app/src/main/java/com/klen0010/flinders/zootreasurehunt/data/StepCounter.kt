@@ -8,8 +8,10 @@ import android.hardware.SensorManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+//Step Counter Class
 class StepCounterManager(context: Context) : SensorEventListener {
 
+    //Sensor Manager
     private val sensorManager =
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 

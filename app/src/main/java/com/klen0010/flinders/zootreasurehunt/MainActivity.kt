@@ -154,7 +154,6 @@ class MainActivity : ComponentActivity() {
 fun ZooApp(viewModel: ZooViewModel) {
     val navController = rememberNavController()
     val badgeEvent by viewModel.badgeEvents.collectAsState()
-    val steps by viewModel.stepCount.collectAsState()
 
     val bottomItems = listOf(
         BottomNavItem.Home,
